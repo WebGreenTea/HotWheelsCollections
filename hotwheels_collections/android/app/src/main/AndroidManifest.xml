@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.greentea.hotwheels_collections">
    <application
-        android:label="hotwheels_collections"
+        android:label="HotWheelsCollections"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
