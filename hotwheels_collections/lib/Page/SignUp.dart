@@ -45,7 +45,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 height: 50,
               ),
               Padding(
-                padding: EdgeInsets.fromLTRB(60, 0, 60, 0),
+                padding: EdgeInsets.fromLTRB(40, 0, 40, 0),
                 child: InkWell(
                   onTap: () {
                     final provider =
@@ -53,7 +53,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     provider.googleLogin();
                   },
                   child: Container(
-                    height: 70,
+                    height: 55,
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.all(Radius.circular(45)),

@@ -41,6 +41,7 @@ dependencies:
   provider: ^6.0.3
   adobe_xd: ^2.0.1
   hexcolor: ^2.0.7
+  flutterfire_ui: ^0.4.2
 
 dev_dependencies:
   flutter_test:

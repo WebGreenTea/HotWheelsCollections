@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:hotwheels_collections/Page/MainLine.dart';
 import 'package:provider/provider.dart';
-import 'provider/GoogleSignIn.dart';
+import '../provider/GoogleSignIn.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -18,7 +19,7 @@ class LoginedPage extends StatelessWidget {
               Provider.of<GoogleSignProvider>(context, listen: false);
           provider.logout();
         },
-        child: Icon(Icons.logout),
+        child: Icon(Icons.logout,color: HexColor('#ffffff'),),
         backgroundColor: Colors.grey[700],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
@@ -96,48 +97,55 @@ class LoginedPage extends StatelessWidget {
                 allowDrawingOutsideViewBox: true,
                 fit: BoxFit.fill,
               )),
-          Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(50, 0, 50, 0),
-                child: Container(
-                  height: 40,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(20),
-                        topRight: Radius.circular(20),
-                      ),
-                      color: HexColor('##006EA7')),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'MainLine (1995-2022)',
-                        style: TextStyle(
-                            fontSize: 18,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(50, 0, 50, 0),
-                child: Container(
-                  height: 190,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(20),
-                      bottomRight: Radius.circular(20),
+          InkWell(
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) { 
+                  return Mainline();
+               }));
+            },
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(50, 0, 50, 0),
+                  child: Container(
+                    height: 40,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(20),
+                          topRight: Radius.circular(20),
+                        ),
+                        color: HexColor('##006EA7')),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'MainLine (1995-2022)',
+                          style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold),
+                        )
+                      ],
                     ),
-                    image: DecorationImage(
-                        image: const AssetImage('assets/images/mainline.jpg'),
-                        fit: BoxFit.cover),
                   ),
                 ),
-              )
-            ],
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(50, 0, 50, 0),
+                  child: Container(
+                    height: 190,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(20),
+                        bottomRight: Radius.circular(20),
+                      ),
+                      image: DecorationImage(
+                          image: const AssetImage('assets/images/mainline.jpg'),
+                          fit: BoxFit.cover),
+                    ),
+                  ),
+                )
+              ],
+            ),
           ),
           SizedBox(
             height: 30,
