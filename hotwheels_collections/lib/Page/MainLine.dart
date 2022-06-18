@@ -50,9 +50,7 @@ class _MainlineState extends State<Mainline> {
         future: readMainline(),
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
           if (snapshot.hasData) {
-            print(11111);
             if(!inSearch){
-              print(22222);
               DataMainline =  snapshot.data;  
             }
             
