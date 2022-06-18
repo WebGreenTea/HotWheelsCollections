@@ -30,153 +30,108 @@ class _MainlineState extends State<Mainline> {
   //       fromFirestore: (snapshot, _) => MainLineData.fromJson(snapshot.data()!),
   //       toFirestore: (user, _) => user.toJson(),
   //     );
-  // final searchController = TextEditingController();
-   bool isDescending = false;
-  // List<MainLineData> DataMainline = [];
-  // late List<MainLineData> allMainLineData;
-  // bool inSearch = false;
-
-  late Future<List<MainLineData>> allMainLineData;
+  final searchController = TextEditingController();
+  bool isDescending = false;
+  List<MainLineData> DataMainline = [];
+  late List<MainLineData> allMainLineData;
+  bool inSearch = false;  
 
   @override
   void initState() {
     super.initState();
-    allMainLineData = readMainline();
+    //allMainLineData =  readMainline();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Mainline'),
-      ),
+      //appBar: AppBar(title: Text('MainLine')),
       body: FutureBuilder(
-        future: allMainLineData,
+        future: readMainline(),
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
           if (snapshot.hasData) {
-            List<MainLineData> DataMainline = snapshot.data;
+            print(11111);
+            if(!inSearch){
+              print(22222);
+              DataMainline =  snapshot.data;  
+            }
+            
             return Column(
               children: [
+                Container(
+                  decoration: BoxDecoration(color: Colors.orange,
+                  borderRadius: BorderRadius.only(bottomLeft: Radius.circular(15),bottomRight: Radius.circular(15))),
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(5, 30, 5, 0),
+                        child: TextField(
+                          controller: searchController,
+                          decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Colors.white,
+                              prefixIcon: Icon(Icons.search,color: HexColor('#707070'),),
+                              hintText: 'Model name',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(14),
+                                borderSide: BorderSide(
+                                  width: 0,
+                                  style: BorderStyle.none,
+                                ),
+                              )),
+                          onChanged: searchModel,
+                        ),
+                      ),
+                      TextButton.icon(
+                          onPressed: () {
+                            setState(() {
+                              isDescending = !isDescending;
+                            });
+                          },
+                          style: TextButton.styleFrom(
+                            primary: Colors.white,
+                          ),
+                          icon: RotatedBox(
+                            quarterTurns: 1,
+                            child: Icon(
+                              Icons.compare_arrows,
+                              size: 28,
+                            ),
+                          ),
+                          label: Text(isDescending ? 'Z-A' : 'A-Z')),
+                    ],
+                  ),
+                ),
                 Expanded(
                   child: ListView.builder(
-                    itemCount: DataMainline.length,
-                    itemBuilder: ((context, i) {
-                      
-                      var items = DataMainline..sort((item1, item2) => isDescending
+                    padding: EdgeInsets.zero,
+                      shrinkWrap: true,
+                      itemCount: DataMainline.length,
+                      itemBuilder: (context, i) {
+                        DataMainline.sort((item1, item2) => isDescending
                             ? item2.ModelName.compareTo(item1.ModelName)
                             : item1.ModelName.compareTo(item2.ModelName));
-                      var item = items[i];
-                      return ListTile(
-                        onTap: () {
-                          print(99999);
-                        },
-                        leading: Container(
-                          width: 70,
-                          child: Loadimage(item),
-                        ),
-                        title: Text(item.ModelName),
-                        subtitle: Text('${item.Series} ${item.SeriesNumber}'),
-                      );
-                    }),
-                  ),
+                        var item = DataMainline[i];
+                        return ListTile(
+                          onTap: () {
+                            print(99999);
+                          },
+                          leading: Container(
+                            width: 70,
+                            child: Loadimage(item),
+                          ),
+                          title: Text(item.ModelName),
+                          subtitle: Text('${item.Series} ${item.SeriesNumber}'),
+                        );
+                      }),
                 ),
               ],
             );
           } else {
-            return CircularProgressIndicator();
+            return Center(child: CircularProgressIndicator());
           }
         },
       ),
-
-      // return Scaffold(
-      //   //appBar: AppBar(title: Text('MainLine')),
-      //   body: FutureBuilder(
-      //     future: readMainline(),
-      //     builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-      //       if (snapshot.hasData) {
-      //         print(11111);
-      //         if(!inSearch){
-      //           print(22222);
-      //           DataMainline =  snapshot.data;
-      //         }
-
-      //         return Column(
-      //           children: [
-      //             Container(
-      //               decoration: BoxDecoration(color: Colors.orange,
-      //               borderRadius: BorderRadius.only(bottomLeft: Radius.circular(15),bottomRight: Radius.circular(15))),
-      //               child: Column(
-      //                 children: [
-      //                   Padding(
-      //                     padding: const EdgeInsets.fromLTRB(5, 30, 5, 0),
-      //                     child: TextField(
-      //                       controller: searchController,
-      //                       decoration: InputDecoration(
-      //                           filled: true,
-      //                           fillColor: Colors.white,
-      //                           prefixIcon: Icon(Icons.search,color: HexColor('#707070'),),
-      //                           hintText: 'Model name',
-      //                           border: OutlineInputBorder(
-      //                             borderRadius: BorderRadius.circular(14),
-      //                             borderSide: BorderSide(
-      //                               width: 0,
-      //                               style: BorderStyle.none,
-      //                             ),
-      //                           )),
-      //                       onChanged: searchModel,
-      //                     ),
-      //                   ),
-      //                   TextButton.icon(
-      //                       onPressed: () {
-      //                         setState(() {
-      //                           isDescending = !isDescending;
-      //                         });
-      //                       },
-      //                       style: TextButton.styleFrom(
-      //                         primary: Colors.white,
-      //                       ),
-      //                       icon: RotatedBox(
-      //                         quarterTurns: 1,
-      //                         child: Icon(
-      //                           Icons.compare_arrows,
-      //                           size: 28,
-      //                         ),
-      //                       ),
-      //                       label: Text(isDescending ? 'Z-A' : 'A-Z')),
-      //                 ],
-      //               ),
-      //             ),
-      //             Expanded(
-      //               child: ListView.builder(
-      //                 padding: EdgeInsets.zero,
-      //                   shrinkWrap: true,
-      //                   itemCount: DataMainline.length,
-      //                   itemBuilder: (context, i) {
-      //                     if (i.isOdd) return Divider();
-      //                     DataMainline.sort((item1, item2) => isDescending
-      //                         ? item2.ModelName.compareTo(item1.ModelName)
-      //                         : item1.ModelName.compareTo(item2.ModelName));
-      //                     var item = DataMainline[i];
-      //                     return ListTile(
-      //                       onTap: () {
-      //                         print(99999);
-      //                       },
-      //                       leading: Container(
-      //                         width: 70,
-      //                         child: Loadimage(item),
-      //                       ),
-      //                       title: Text(item.ModelName),
-      //                       subtitle: Text('${item.Series} ${item.SeriesNumber}'),
-      //                     );
-      //                   }),
-      //             ),
-      //           ],
-      //         );
-      //       } else {
-      //         return Center(child: CircularProgressIndicator());
-      //       }
-      //     },
-      //   ),
 
       // body: Column(
       //   children: [
@@ -281,10 +236,33 @@ class _MainlineState extends State<Mainline> {
   }
 
   Future<List<MainLineData>> readMainline() async {
+     
     JsonManagement jsonManagement = JsonManagement();
 
     //List<dynamic> list = await jsonManagement.read('mainline.json');
 
-    return await jsonManagement.read('mainline.json');
+    allMainLineData =  await jsonManagement.read('mainline.json');
+    await Future.delayed(Duration(seconds: 1));
+    
+    return allMainLineData;
+  }
+
+  void searchModel(String query) {
+    inSearch = true;
+    // allMainLineData.then((value){
+    //   DataMainline = value;
+    // } );
+    final suggestions = allMainLineData.where((element) {
+      final ModelName = element.ModelName.toLowerCase();
+      final input = query.toLowerCase();
+
+      return ModelName.contains(input);
+    }).toList();
+    
+
+
+    setState(() {
+      DataMainline = suggestions;
+    });
   }
 }
