@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:adobe_xd/pinned.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:hotwheels_collections/updateDB.dart';
 import 'package:provider/provider.dart';
 import 'package:hotwheels_collections/provider/GoogleSignIn.dart';
 
@@ -13,6 +14,7 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
+  //UpdateDB dbManagement = UpdateDB();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,6 +50,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 padding: EdgeInsets.fromLTRB(40, 0, 40, 0),
                 child: InkWell(
                   onTap: () {
+                    //dbManagement.loadDataVersion();
                     final provider =
                         Provider.of<GoogleSignProvider>(context, listen: false);
                     provider.googleLogin();

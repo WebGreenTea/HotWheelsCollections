@@ -16,8 +16,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: ((context) => GoogleSignProvider()),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: ((context) => GoogleSignProvider()))
+      ],
       child: MaterialApp(
         title: 'HotWheelsCollections',
         theme: ThemeData(
