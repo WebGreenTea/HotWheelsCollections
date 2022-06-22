@@ -52,16 +52,16 @@ class UpdateDB {
     } else {//มี doc ชื่อ DataVersion ใน db
       int index = 0;
       for (var record in snapshot) {
-        if (record['docName'] as String == JsonDataVersion[index].docName) {//ชื่อ doc บน json กับ db ตรงกัน
-          if (record['dataversion'] as int < await JsonDataVersion[index].dataVersion) {
-            //SYNC***  
-          } else {//doc ทีมี เป็นเวอร์ชั่นล่าสุด
-            print('dataVersion is latest');
-          }
-        } else {//ชื่อ doc บน json กับ db ไม่ตรงกัน
-          //SYNC
-          break;
-        }
+        // if (record['docName'] as String == JsonDataVersion[index].docName) {//ชื่อ doc บน json กับ db ตรงกัน
+        //   if (record['dataversion'] as int < await JsonDataVersion[index].dataVersion) {
+        //     //SYNC***  
+        //   } else {//doc ทีมี เป็นเวอร์ชั่นล่าสุด
+        //     print('dataVersion is latest');
+        //   }
+        // } else {//ชื่อ doc บน json กับ db ไม่ตรงกัน
+        //   //SYNC
+        //   break;
+        // }
         index++;
       }
     }

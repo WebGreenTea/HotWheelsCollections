@@ -9,6 +9,7 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutterfire_ui/firestore.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:hotwheels_collections/dbManage.dart';
 import 'package:hotwheels_collections/jsonread.dart';
 import 'package:hotwheels_collections/modelData/mainlineData.dart';
 import 'dart:convert';
@@ -31,6 +32,7 @@ class _MainlineState extends State<Mainline> {
   //       toFirestore: (user, _) => user.toJson(),
   //     );
   final searchController = TextEditingController();
+  final scrollController = ScrollController();
   bool isDescending = false;
   List<MainLineData> DataMainline = [];
   late List<MainLineData> allMainLineData;
@@ -82,6 +84,7 @@ class _MainlineState extends State<Mainline> {
                       ),
                       TextButton.icon(
                           onPressed: () {
+                            resetScroll();
                             setState(() {
                               isDescending = !isDescending;
                             });
@@ -102,24 +105,26 @@ class _MainlineState extends State<Mainline> {
                 ),
                 Expanded(
                   child: ListView.builder(
+                    controller: scrollController,
                     padding: EdgeInsets.zero,
                       shrinkWrap: true,
                       itemCount: DataMainline.length,
                       itemBuilder: (context, i) {
                         DataMainline.sort((item1, item2) => isDescending
-                            ? item2.ModelName.compareTo(item1.ModelName)
-                            : item1.ModelName.compareTo(item2.ModelName));
+                            ? item2.ModelName.toLowerCase().compareTo(item1.ModelName.toLowerCase())
+                            : item1.ModelName.toLowerCase().compareTo(item2.ModelName.toLowerCase()));
                         var item = DataMainline[i];
                         return ListTile(
                           onTap: () {
-                            print(99999);
+                            print(item.ModelName);
+                            print(item.id);
                           },
                           leading: Container(
                             width: 70,
                             child: Loadimage(item),
                           ),
                           title: Text(item.ModelName),
-                          subtitle: Text('${item.Series} ${item.SeriesNumber}'),
+                          subtitle: Text('${item.Series} ${item.SeriesNumber} ${item.YEAR}'),
                         );
                       }),
                 ),
@@ -233,13 +238,17 @@ class _MainlineState extends State<Mainline> {
     );
   }
 
+  void resetScroll(){
+    scrollController.jumpTo(0);
+  }
+
   Future<List<MainLineData>> readMainline() async {
      
     JsonManagement jsonManagement = JsonManagement();
 
     //List<dynamic> list = await jsonManagement.read('mainline.json');
 
-    allMainLineData =  await jsonManagement.read('mainline.json');
+    allMainLineData =  await jsonManagement.read('datamainline.json');
     await Future.delayed(Duration(seconds: 1));
     
     return allMainLineData;
@@ -262,5 +271,6 @@ class _MainlineState extends State<Mainline> {
     setState(() {
       DataMainline = suggestions;
     });
+    resetScroll();
   }
 }

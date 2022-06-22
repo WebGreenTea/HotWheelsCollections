@@ -10,7 +10,7 @@ class MainLineData {
   final String SeriesNumber;
   final String NumbersInYear;
   final String ModelName;
-  final List<String> NewCar;
+  //final List<String> NewCar;
   final List<String> ChaseCar;
   final List<String> Exclusive;
   bool have = false;
@@ -25,7 +25,7 @@ class MainLineData {
     required this.NumbersInYear,
     required this.ModelName,
     required this.ChaseCar,
-    required this.NewCar,
+    //required this.NewCar,
     required this.Exclusive,
   }) {
     //print(this.ModelName);
@@ -43,7 +43,7 @@ class MainLineData {
           ModelName: json['ModelName']! as String,
           ChaseCar: (json['ChaseCar'] as List<dynamic>).cast<String>(),
           Exclusive: (json['Exclusive'] as List<dynamic>).cast<String>(),
-          NewCar: (json['NewCar'] as List<dynamic>).cast<String>(),
+          //NewCar: (json['NewCar'] as List<dynamic>).cast<String>(),
         );
 
   Map<String, Object?> toJson() => {
@@ -55,5 +55,7 @@ class MainLineData {
         'SeriesNumber': SeriesNumber,
         'NumberInYear': NumbersInYear,
         'ModelName': ModelName,
+        'ChaseCar': ChaseCar,
+        'Exclusive':Exclusive,
       };
 }

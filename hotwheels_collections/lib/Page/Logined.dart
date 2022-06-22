@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:hotwheels_collections/Page/MainLine.dart';
+import 'package:hotwheels_collections/dbManage.dart';
 import 'package:provider/provider.dart';
 import '../provider/GoogleSignIn.dart';
 import 'package:hexcolor/hexcolor.dart';

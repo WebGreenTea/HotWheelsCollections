@@ -4,6 +4,10 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:hotwheels_collections/Page/Logined.dart';
 import 'package:hotwheels_collections/Page/SignUp.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'dart:io';
+
+import 'package:hotwheels_collections/dbManage.dart';
+
 
 class HomePage extends StatelessWidget {
   HomePage({Key? key}) : super(key: key);
@@ -13,7 +17,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: FutureBuilder(
-        future: firebase,
+        future: Future.wait([firebase,updateDB()]),
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
           if (snapshot.hasData) {
             return StreamBuilder(
@@ -41,10 +45,18 @@ class HomePage extends StatelessWidget {
                   HexColor('#9F2C00'),
                 ],
               )),
-              child: Center(child: CircularProgressIndicator()));
+              child: Center(child: LinearProgressIndicator()));
         },
         
       ),
     );
   }
+
+  Future<void> updateDB() async{
+    await Future.delayed(Duration(seconds: 1));
+    await DBManage().CheckDatabaseVer();
+    //await DBManage().importDB();
+  }
+
+
 }
