@@ -13,6 +13,7 @@ import 'package:sembast/utils/sembast_import_export.dart';
 
 class DBManage {
   static const String VERSION_STORE_NAME = 'dataVersion';
+  static const String MAINLINE_STORE_NAME = 'mainline';
   String dbName = 'mainDB.db';
   List<String> allDoc = ['mainline'];
 
@@ -38,7 +39,9 @@ class DBManage {
 
   Future<void> CheckDatabaseVer() async{
     Database db = await openDatabase();
-    await dbIsLastVer(db);
+    if(!await dbIsLastVer(db)){
+      await importDB();
+    }
   }
 
   Future<bool> dbIsLastVer(Database db) async{
@@ -59,11 +62,53 @@ class DBManage {
 
     print('versionDB on package is ${verP}');
     if(verD<verP){
-      await importDB();
       print('impot database success');
+      return false;
     }
-
     return true;
+  }
+
+  Future<List<String>> getAllYearMainline() async{
+    Database db = await openDatabase();
+    final mainlineStore = intMapStoreFactory.store('mainline');
+    List<String> year = [];
+    final finder = Finder(filter: Filter.custom((record) {
+      var data = record.value as Map;
+      String y = data['YEAR'].toString();
+      if(year.contains(y)){
+        return false;
+      }
+      year.add(y);
+      return true;
+    }));
+    await mainlineStore.find(db,finder: finder);
+    db.close();
+    //final mainlineSnapshot = await mainlineStore.(db,finder: finder);
+    // List<MainLineData> list =  mainlineSnapshot.map((snapshot) {
+    //   final item = MainLineData.fromJson(snapshot.value);
+    //   return item;
+    // }).toList();
+    //print(year);
+    return year;
+  }
+
+  Future<List<String>> getSeriesMainlinrOfYear(int year) async{
+    Database db = await openDatabase();
+    final mainlineStore = intMapStoreFactory.store('mainline');
+    List<String> series = [];
+    final finder = Finder(filter: Filter.custom((record) {
+      var data = record.value as Map;
+      String s = data['Series'].toString();
+      if(series.contains(s)){
+        return false;
+      }
+      series.add(s);
+      return true;
+    }));
+    await mainlineStore.find(db,finder: finder);
+    db.close();
+    print(series);
+    return series;
   }
 
 }

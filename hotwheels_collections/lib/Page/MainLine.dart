@@ -15,6 +15,7 @@ import 'package:hotwheels_collections/modelData/mainlineData.dart';
 import 'dart:convert';
 
 import 'package:optimized_cached_image/optimized_cached_image.dart';
+import 'package:sembast/sembast.dart';
 
 class Mainline extends StatefulWidget {
   const Mainline({Key? key}) : super(key: key);
@@ -33,203 +34,159 @@ class _MainlineState extends State<Mainline> {
   //     );
   final searchController = TextEditingController();
   final scrollController = ScrollController();
-  bool isDescending = false;
+  bool isAscending = true; //
+
   List<MainLineData> DataMainline = [];
-  late List<MainLineData> allMainLineData;
-  bool inSearch = false;  
+  late List<MainLineData> allMainLineData; //x
+  late Future<List<MainLineData>>? mainlineData;
+  bool inSearch = false;
+  String TextinSearchBar = '';
+
+  List<String> AllYear = [];
+  //Future allYear = DBManage().getAllYearMainline();
+  String YearSelectedItem = 'ALL YEAR';
 
   @override
   void initState() {
     super.initState();
-    //allMainLineData =  readMainline();
+    //allYear =  DBManage().getAllYearMainline();
+    mainlineData = getMainlineData();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //appBar: AppBar(title: Text('MainLine')),
-      body: FutureBuilder(
-        future: readMainline(),
-        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-          if (snapshot.hasData) {
-            if(!inSearch){
-              DataMainline =  snapshot.data;  
-            }
-            
-            return Column(
-              children: [
-                Container(
-                  decoration: BoxDecoration(color: Colors.orange,
-                  borderRadius: BorderRadius.only(bottomLeft: Radius.circular(15),bottomRight: Radius.circular(15))),
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(5, 30, 5, 0),
-                        child: TextField(
-                          controller: searchController,
-                          decoration: InputDecoration(
-                              filled: true,
-                              fillColor: Colors.white,
-                              prefixIcon: Icon(Icons.search,color: HexColor('#707070'),),
-                              hintText: 'Model name',
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(14),
-                                borderSide: BorderSide(
-                                  width: 0,
-                                  style: BorderStyle.none,
-                                ),
-                              )),
-                          onChanged: searchModel,
+        //appBar: AppBar(title: Text('MainLine')),
+        body: Column(
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.orange,
+            // borderRadius: BorderRadius.only(
+            //     bottomLeft: Radius.circular(15),
+            //     bottomRight: Radius.circular(15))
+          ),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(5, 30, 5, 0),
+                child: TextField(
+                  controller: searchController,
+                  decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
+                      prefixIcon: Icon(
+                        Icons.search,
+                        color: HexColor('#707070'),
+                      ),
+                      hintText: 'Model name',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(14),
+                        borderSide: BorderSide(
+                          width: 0,
+                          style: BorderStyle.none,
+                        ),
+                      )),
+                  onChanged: searchModel,
+                ),
+              ),
+              Row(
+                children: [
+                  TextButton.icon(
+                      onPressed: () {
+                        resetScroll();
+                        setState(() {
+                          isAscending = !isAscending;
+                          mainlineData = getMainlineData();
+                        });
+                      },
+                      style: TextButton.styleFrom(
+                        primary: Colors.white,
+                      ),
+                      icon: RotatedBox(
+                        quarterTurns: 1,
+                        child: Icon(
+                          Icons.compare_arrows,
+                          size: 28,
                         ),
                       ),
-                      TextButton.icon(
-                          onPressed: () {
-                            resetScroll();
-                            setState(() {
-                              isDescending = !isDescending;
-                            });
-                          },
-                          style: TextButton.styleFrom(
-                            primary: Colors.white,
-                          ),
-                          icon: RotatedBox(
-                            quarterTurns: 1,
-                            child: Icon(
-                              Icons.compare_arrows,
-                              size: 28,
+                      label: Text(isAscending ? 'Aa-Zz' : 'zZ-aA')),
+                  FutureBuilder(
+                    future: DBManage().getAllYearMainline(),
+                    builder: (BuildContext context,
+                        AsyncSnapshot<dynamic> snapshot) {
+                      if (snapshot.hasData) {
+                        //print(snapshot.data);
+                        List<String> allYearItem = snapshot.data;
+                        allYearItem.insert(0, 'ALL YEAR');
+                        allYearItem = allYearItem.toSet().toList();
+                        return Row(
+                          children: [
+                            DropdownButton<String>(
+                              value: YearSelectedItem,
+                              items: allYearItem
+                                  .map((item) => DropdownMenuItem(
+                                      value: item, child: Text(item)))
+                                  .toList(),
+                              onChanged: (item) => setState(() {
+                                YearSelectedItem = item!;
+                                mainlineData = getMainlineData();
+                              }),
                             ),
-                          ),
-                          label: Text(isDescending ? 'Z-A' : 'A-Z')),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: ListView.builder(
-                    controller: scrollController,
-                    padding: EdgeInsets.zero,
-                      shrinkWrap: true,
-                      itemCount: DataMainline.length,
-                      itemBuilder: (context, i) {
-                        DataMainline.sort((item1, item2) => isDescending
-                            ? item2.ModelName.toLowerCase().compareTo(item1.ModelName.toLowerCase())
-                            : item1.ModelName.toLowerCase().compareTo(item2.ModelName.toLowerCase()));
-                        var item = DataMainline[i];
-                        return ListTile(
-                          onTap: () {
-                            print(item.ModelName);
-                            print(item.id);
-                          },
-                          leading: Container(
-                            width: 70,
-                            child: Loadimage(item),
-                          ),
-                          title: Text(item.ModelName),
-                          subtitle: Text('${item.Series} ${item.SeriesNumber} ${item.YEAR}'),
+                          ],
                         );
-                      }),
+                      }
+                      return Container();
+                    },
+                  )
+                ],
+              ),
+            ],
+          ),
+        ),
+        FutureBuilder(
+          future: mainlineData,
+          builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+            if (snapshot.hasData &&
+                snapshot.connectionState == ConnectionState.done) {
+              List<MainLineData> data = snapshot.data;
+              if (data.length <= 0) {
+                return Expanded(
+                    child: Center(
+                        child: Text(
+                  'There are no results for "${TextinSearchBar}"',
+                  style: TextStyle(color: HexColor('#707070')),
+                )));
+              }
+              return Expanded(
+                child: ListView.builder(
+                  controller: scrollController,
+                  padding: EdgeInsets.zero,
+                  shrinkWrap: true,
+                  itemCount: data.length,
+                  itemBuilder: (context, i) {
+                    return ListTile(
+                      onTap: () {
+                        print('tap listTile');
+                      },
+                      leading: Container(
+                        width: 70,
+                        child: Loadimage(data[i]),
+                      ),
+                      title: Text(data[i].ModelName),
+                      subtitle: Text(
+                          '${data[i].Series} ${data[i].SeriesNumber} ${data[i].YEAR}'),
+                    );
+                  },
                 ),
-              ],
-            );
-          } else {
-            return Center(child: CircularProgressIndicator());
-          }
-        },
-      ),
-
-      // body: Column(
-      //   children: [
-      //     TextField(
-      //       controller: searchController,
-      //       decoration: InputDecoration(
-      //         prefixIcon: const Icon(Icons.search),
-      //         hintText: 'Model name',
-      //         border: OutlineInputBorder(
-      //           borderRadius: BorderRadius.circular(14),
-
-      //         )
-      //       ),
-      //       onChanged: searchModel,
-      //     ),
-      //     TextButton.icon(
-      //         onPressed: () {
-      //           setState(() {
-      //             isDescending = !isDescending;
-      //           });
-      //         },
-      //         icon: RotatedBox(
-      //           quarterTurns: 1,
-      //           child: Icon(
-      //             Icons.compare_arrows,
-      //             size: 28,
-      //           ),
-      //         ),
-      //         label: Text(isDescending ? 'Z-A' : 'A-Z')),
-      //     Expanded(
-      //       child: FutureBuilder(
-      //         future: readMainline(),
-      //         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-      //           if (snapshot.hasData) {
-      //             List<MainLineData> DataMainline = snapshot.data;
-      //             return ListView.builder(
-      //                 shrinkWrap: true,
-      //                 itemCount: DataMainline.length,
-      //                 itemBuilder: (context, i) {
-      //                   if (i.isOdd) return Divider();
-      //                   DataMainline.sort((item1, item2) => isDescending
-      //                       ? item2.ModelName.compareTo(item1.ModelName)
-      //                       : item1.ModelName.compareTo(item2.ModelName));
-      //                   final item = DataMainline[i];
-      //                   return ListTile(
-      //                     onTap: () {
-      //                       print(99999);
-      //                     },
-      //                     leading: Container(
-      //                       width: 70,
-      //                       child: Loadimage(item),
-      //                     ),
-      //                     title: Text(item.ModelName),
-      //                     subtitle: Text('${item.Series} ${item.SeriesNumber}'),
-      //                   );
-      //                 });
-      //           } else {
-      //             return Center(child: CircularProgressIndicator());
-      //           }
-      //         },
-      //       ),
-      //     ),
-      //   ],
-      // ),
-
-      // body: FirestoreListView(
-      //     query: queryData,
-      //     pageSize: 20,
-      //     itemBuilder: (context, snapshot) {
-      //       final MainLineData mainline = snapshot.data() as MainLineData;
-
-      //       return ListTile(
-      //         leading: Container(
-      //           width: 70,
-      //           child: Image.network(mainline.img_url, fit: BoxFit.cover,
-      //               loadingBuilder: (BuildContext context, Widget child,
-      //                   ImageChunkEvent? loadingProgress) {
-      //             if (loadingProgress == null) {
-      //               return child;
-      //             }
-      //             return Center(
-      //               child: CircularProgressIndicator(
-      //                 value: loadingProgress.expectedTotalBytes != null
-      //                     ? loadingProgress.cumulativeBytesLoaded /
-      //                         loadingProgress.expectedTotalBytes!
-      //                     : null,
-      //               ),
-      //             );
-      //           }),
-      //         ),
-      //         title: Text(mainline.ModelName),
-      //         subtitle: Text('${mainline.Series} ${mainline.Exclusive.length == 0? "": "| ${mainline.Exclusive[0]}"}'),
-      //       );
-      //     }),
-    );
+              );
+            }
+            //return Center(child: CircularProgressIndicator());
+            return LinearProgressIndicator();
+          },
+        )
+      ],
+    ));
   }
 
   Widget Loadimage(MainLineData item) {
@@ -238,39 +195,69 @@ class _MainlineState extends State<Mainline> {
     );
   }
 
-  void resetScroll(){
-    scrollController.jumpTo(0);
+  void resetScroll() {
+    if (scrollController.hasClients) {
+      scrollController.jumpTo(0);
+    }
   }
 
-  Future<List<MainLineData>> readMainline() async {
-     
-    JsonManagement jsonManagement = JsonManagement();
+  Future<List> test() async {
+    return [];
+  }
 
-    //List<dynamic> list = await jsonManagement.read('mainline.json');
+  Future<List<MainLineData>> getMainlineData() async {
+    Database db = await DBManage().openDatabase();
+    final mainlineStore = intMapStoreFactory.store('mainline');
+    Finder finder;
+    if (YearSelectedItem == 'ALL YEAR') {
+      finder = Finder(
+          sortOrders: [SortOrder('ModelName', isAscending)],
+          filter: Filter.matchesRegExp('ModelName',
+              RegExp('.*${TextinSearchBar}.*', caseSensitive: false)));
+    } else {
+      finder = Finder(sortOrders: [SortOrder('ModelName',isAscending)],filter: Filter.and([Filter.equals('YEAR',int.parse(YearSelectedItem) ),Filter.matchesRegExp('ModelName', RegExp('.*$TextinSearchBar.*',caseSensitive: false))]));
+    }
+    final mainlineSnapshot = await mainlineStore.find(db, finder: finder);
+    List<MainLineData> list = mainlineSnapshot.map((snapshot) {
+      final item = MainLineData.fromJson(snapshot.value);
+      return item;
+    }).toList();
 
-    allMainLineData =  await jsonManagement.read('datamainline.json');
-    await Future.delayed(Duration(seconds: 1));
-    
-    return allMainLineData;
+    list.sort((item1, item2) => isAscending
+        ? item1.ModelName.toLowerCase().compareTo(item2.ModelName.toLowerCase())
+        : item2.ModelName.toLowerCase()
+            .compareTo(item1.ModelName.toLowerCase()));
+    db.close();
+    return list;
+
+    // JsonManagement jsonManagement = JsonManagement();
+
+    // //List<dynamic> list = await jsonManagement.read('mainline.json');
+
+    // //allMainLineData = await jsonManagement.read('datamainline.json');
+    // await Future.delayed(Duration(seconds: 1));
+
+    // return await jsonManagement.read('datamainline.json');
   }
 
   void searchModel(String query) {
-    inSearch = true;
-    // allMainLineData.then((value){
-    //   DataMainline = value;
-    // } );
-    final suggestions = allMainLineData.where((element) {
-      final ModelName = element.ModelName.toLowerCase();
-      final input = query.toLowerCase();
+    //inSearch = true;
 
-      return ModelName.contains(input);
-    }).toList();
-    
+    // final suggestions = allMainLineData.where((element) {
+    //   final ModelName = element.ModelName.toLowerCase();
+    //   final input = query.toLowerCase();
 
+    //   return ModelName.contains(input);
+    // }).toList();
 
+    // setState(() {
+    //   DataMainline = suggestions;
+    // });
+    TextinSearchBar = query;
     setState(() {
-      DataMainline = suggestions;
+      mainlineData = getMainlineData();
     });
+
     resetScroll();
   }
 }
