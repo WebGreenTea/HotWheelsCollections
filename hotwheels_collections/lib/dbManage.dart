@@ -89,7 +89,7 @@ class DBManage {
     //   return item;
     // }).toList();
     //print(year);
-    return year;
+    return year.reversed.toList();
   }
 
   Future<List<String>> getSeriesMainlinrOfYear(int year) async{
@@ -99,15 +99,24 @@ class DBManage {
     final finder = Finder(filter: Filter.custom((record) {
       var data = record.value as Map;
       String s = data['Series'].toString();
+      int yearinDB = data['YEAR'];
       if(series.contains(s)){
         return false;
       }
-      series.add(s);
-      return true;
+      else if( yearinDB==year){
+        series.add(s);
+        return true;  
+      }
+      return false;
+      
+
+      
     }));
     await mainlineStore.find(db,finder: finder);
     db.close();
-    print(series);
+
+    series.sort((item1,item2) => item1.compareTo(item2));
+
     return series;
   }
 

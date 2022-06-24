@@ -45,6 +45,8 @@ class _MainlineState extends State<Mainline> {
   List<String> AllYear = [];
   //Future allYear = DBManage().getAllYearMainline();
   String YearSelectedItem = 'ALL YEAR';
+  String SerieSelectedItem = 'ALL Series';
+  late Future<List<String>> Series = DBManage().getSeriesMainlinrOfYear(convertYearStrToInt(YearSelectedItem));
 
   @override
   void initState() {
@@ -90,56 +92,91 @@ class _MainlineState extends State<Mainline> {
                   onChanged: searchModel,
                 ),
               ),
-              Row(
-                children: [
-                  TextButton.icon(
-                      onPressed: () {
-                        resetScroll();
-                        setState(() {
-                          isAscending = !isAscending;
-                          mainlineData = getMainlineData();
-                        });
-                      },
-                      style: TextButton.styleFrom(
-                        primary: Colors.white,
-                      ),
-                      icon: RotatedBox(
-                        quarterTurns: 1,
-                        child: Icon(
-                          Icons.compare_arrows,
-                          size: 28,
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    TextButton.icon(
+                        onPressed: () {
+                          resetScroll();
+                          setState(() {
+                            isAscending = !isAscending;
+                            mainlineData = getMainlineData();
+                          });
+                        },
+                        style: TextButton.styleFrom(
+                          primary: Colors.white,
                         ),
-                      ),
-                      label: Text(isAscending ? 'Aa-Zz' : 'zZ-aA')),
-                  FutureBuilder(
-                    future: DBManage().getAllYearMainline(),
-                    builder: (BuildContext context,
-                        AsyncSnapshot<dynamic> snapshot) {
-                      if (snapshot.hasData) {
-                        //print(snapshot.data);
-                        List<String> allYearItem = snapshot.data;
-                        allYearItem.insert(0, 'ALL YEAR');
-                        allYearItem = allYearItem.toSet().toList();
-                        return Row(
-                          children: [
-                            DropdownButton<String>(
-                              value: YearSelectedItem,
-                              items: allYearItem
-                                  .map((item) => DropdownMenuItem(
-                                      value: item, child: Text(item)))
-                                  .toList(),
-                              onChanged: (item) => setState(() {
-                                YearSelectedItem = item!;
-                                mainlineData = getMainlineData();
-                              }),
-                            ),
-                          ],
-                        );
-                      }
-                      return Container();
-                    },
-                  )
-                ],
+                        icon: RotatedBox(
+                          quarterTurns: 1,
+                          child: Icon(
+                            Icons.compare_arrows,
+                            size: 28,
+                          ),
+                        ),
+                        label: Text(isAscending ? 'Aa-Zz' : 'zZ-aA')),
+                    FutureBuilder(
+                      future: DBManage().getAllYearMainline(),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<dynamic> snapshot) {
+                        if (snapshot.hasData) {
+                          //print(snapshot.data);
+                          List<String> allYearItem = snapshot.data;
+                          allYearItem.insert(0, 'ALL YEAR');
+                          allYearItem = allYearItem.toSet().toList();
+                          return Row(
+                            children: [
+                              DropdownButton<String>(
+                                value: YearSelectedItem,
+                                items: allYearItem
+                                    .map((item) => DropdownMenuItem(
+                                        value: item, child: Text(item)))
+                                    .toList(),
+                                onChanged: (item) => setState(() {
+                                  YearSelectedItem = item!;
+                                  SerieSelectedItem = 'ALL Series';
+                                  Series = DBManage().getSeriesMainlinrOfYear(convertYearStrToInt(YearSelectedItem));
+                                  mainlineData = getMainlineData();
+                                }),
+                              ),
+                              FutureBuilder(
+                                future: Series,
+                                builder: (BuildContext context,AsyncSnapshot<dynamic> snapshot) {
+                                  if(snapshot.hasData && snapshot.connectionState == ConnectionState.done){
+                                    List<String> allSeriesItem =  snapshot.data;
+                                    allSeriesItem.insert(0, 'ALL Series');
+                                    allSeriesItem = allSeriesItem.toSet().toList();
+                                    print(allSeriesItem);
+                                    if(allSeriesItem.length <= 1){
+                                      return Container();
+                                    }
+                                    //SerieSelectedItem = allSeriesItem[0];
+                                    //return Container();
+                                    return DropdownButton<String>(
+                                value: SerieSelectedItem,
+                                items: allSeriesItem
+                                    .map((item) => DropdownMenuItem(
+                                        value: item, child: Text(item)))
+                                    .toList(),
+                                onChanged: (item) => setState(() {
+                                  SerieSelectedItem = item!;
+                                  mainlineData = getMainlineData();
+                                  Series = DBManage().getSeriesMainlinrOfYear(convertYearStrToInt(YearSelectedItem));
+                                }),
+                              );
+                                  }
+                                  return Container();
+                                  
+                                },
+                              )
+                            ],
+                          );
+                        }
+                        return Container();
+                      },
+                    )
+                  ],
+                ),
               ),
             ],
           ),
@@ -209,14 +246,31 @@ class _MainlineState extends State<Mainline> {
     Database db = await DBManage().openDatabase();
     final mainlineStore = intMapStoreFactory.store('mainline');
     Finder finder;
-    if (YearSelectedItem == 'ALL YEAR') {
-      finder = Finder(
-          sortOrders: [SortOrder('ModelName', isAscending)],
-          filter: Filter.matchesRegExp('ModelName',
-              RegExp('.*${TextinSearchBar}.*', caseSensitive: false)));
-    } else {
-      finder = Finder(sortOrders: [SortOrder('ModelName',isAscending)],filter: Filter.and([Filter.equals('YEAR',int.parse(YearSelectedItem) ),Filter.matchesRegExp('ModelName', RegExp('.*$TextinSearchBar.*',caseSensitive: false))]));
+    List<Filter> allFilter = [Filter.matchesRegExp('ModelName',RegExp('.*${TextinSearchBar}.*', caseSensitive: false))];
+    // if (YearSelectedItem == 'ALL YEAR') {
+    //   finder = Finder(
+    //       sortOrders: [SortOrder('ModelName', isAscending)],
+    //       filter: Filter.matchesRegExp('ModelName',
+    //           RegExp('.*${TextinSearchBar}.*', caseSensitive: false)));
+    // } else {
+    //   finder = Finder(
+    //       sortOrders: [SortOrder('ModelName', isAscending)],
+    //       filter: Filter.and([
+    //         Filter.equals('YEAR', int.parse(YearSelectedItem)),
+    //         Filter.matchesRegExp('ModelName',
+    //             RegExp('.*$TextinSearchBar.*', caseSensitive: false))
+    //       ]));
+    // }
+
+    if(YearSelectedItem != 'ALL YEAR'){
+      allFilter.add(Filter.equals('YEAR', int.parse(YearSelectedItem)));
     }
+    if(SerieSelectedItem != 'ALL Series'){
+      allFilter.add(Filter.equals('Series', SerieSelectedItem));
+    }
+    finder = Finder(
+          sortOrders: [SortOrder('ModelName', isAscending)],
+          filter: Filter.and(allFilter));
     final mainlineSnapshot = await mainlineStore.find(db, finder: finder);
     List<MainLineData> list = mainlineSnapshot.map((snapshot) {
       final item = MainLineData.fromJson(snapshot.value);
@@ -259,5 +313,13 @@ class _MainlineState extends State<Mainline> {
     });
 
     resetScroll();
+  }
+
+  int convertYearStrToInt(String str) {
+    int year = 0;
+    try {
+      year = int.parse(str);
+    } catch (e) {}
+    return year;
   }
 }
