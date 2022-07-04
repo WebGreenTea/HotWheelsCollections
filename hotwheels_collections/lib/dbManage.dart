@@ -100,6 +100,11 @@ class DBManage {
       var data = record.value as Map;
       String s = data['Series'].toString();
       int yearinDB = data['YEAR'];
+
+      if(data['Exclusive'].length > 1){
+        print(data['id']);
+      }
+
       if(series.contains(s)){
         return false;
       }
@@ -108,9 +113,6 @@ class DBManage {
         return true;  
       }
       return false;
-      
-
-      
     }));
     await mainlineStore.find(db,finder: finder);
     db.close();
