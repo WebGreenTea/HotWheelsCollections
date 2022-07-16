@@ -17,13 +17,14 @@ class DBManage {
   String dbName = 'mainDB.db';
   List<String> allDoc = ['mainline'];
 
-
   Future<void> importDB() async {
-    final jsondata = await rootBundle.rootBundle.loadString('assets/data/mainDB.json');
+    final jsondata =
+        await rootBundle.rootBundle.loadString('assets/data/mainDB.json');
     var map = json.decode(jsondata) as Map;
     Directory appDirectory = await getApplicationDocumentsDirectory();
     String dbLocation = join(appDirectory.path, dbName);
-    Database importDb = await importDatabase(map, databaseFactoryIo, dbLocation);
+    Database importDb =
+        await importDatabase(map, databaseFactoryIo, dbLocation);
     print(dbLocation);
   }
 
@@ -37,51 +38,52 @@ class DBManage {
     return db;
   }
 
-  Future<void> CheckDatabaseVer() async{
+  Future<void> CheckDatabaseVer() async {
     Database db = await openDatabase();
-    if(!await dbIsLastVer(db)){
+    if (!await dbIsLastVer(db)) {
       await importDB();
     }
   }
 
-  Future<bool> dbIsLastVer(Database db) async{
+  Future<bool> dbIsLastVer(Database db) async {
     final VersionStore = intMapStoreFactory.store(VERSION_STORE_NAME);
     final recVer = await VersionStore.findFirst(db);
-    if(recVer == null){
+    if (recVer == null) {
       print('db not found');
       return false;
     }
-    final dataVersion = DataVersion.fromJson(recVer.value);  
+    final dataVersion = DataVersion.fromJson(recVer.value);
     int verD = dataVersion.dataVersion;
     print('versionDB on device is ${verD}');
-    
-    final jsondata = await rootBundle.rootBundle.loadString('assets/data/DataVersion.json');
-    final verInPackage =  json.decode(jsondata);
+
+    final jsondata =
+        await rootBundle.rootBundle.loadString('assets/data/DataVersion.json');
+    final verInPackage = json.decode(jsondata);
     //return list.map((e) => MainLineData.fromJson(e)).toList();
     int verP = DataVersion.fromJson(verInPackage).dataVersion;
 
     print('versionDB on package is ${verP}');
-    if(verD<verP){
+    if (verD < verP) {
       print('impot database success');
       return false;
     }
     return true;
   }
 
-  Future<List<String>> getAllYearMainline() async{
+  Future<List<String>> getAllYearMainline() async {
     Database db = await openDatabase();
     final mainlineStore = intMapStoreFactory.store('mainline');
     List<String> year = [];
     final finder = Finder(filter: Filter.custom((record) {
       var data = record.value as Map;
       String y = data['YEAR'].toString();
-      if(year.contains(y)){
+      if (year.contains(y)) {
         return false;
       }
       year.add(y);
       return true;
     }));
-    await mainlineStore.find(db,finder: finder);
+    await mainlineStore.find(db, finder: finder);
     db.close();
     //final mainlineSnapshot = await mainlineStore.(db,finder: finder);
     // List<MainLineData> list =  mainlineSnapshot.map((snapshot) {
@@ -92,7 +94,7 @@ class DBManage {
     return year.reversed.toList();
   }
 
-  Future<List<String>> getSeriesMainlinrOfYear(int year) async{
+  Future<List<String>> getSeriesMainlinrOfYear(int year) async {
     Database db = await openDatabase();
     final mainlineStore = intMapStoreFactory.store('mainline');
     List<String> series = [];
@@ -101,25 +103,23 @@ class DBManage {
       String s = data['Series'].toString();
       int yearinDB = data['YEAR'];
 
-      if(data['Exclusive'].length > 1){
-        print(data['id']);
+      if (data['Exclusive'].length > 1) {
+        //print(data['id']);
       }
 
-      if(series.contains(s)){
+      if (series.contains(s)) {
         return false;
-      }
-      else if( yearinDB==year){
+      } else if (yearinDB == year) {
         series.add(s);
-        return true;  
+        return true;
       }
       return false;
     }));
-    await mainlineStore.find(db,finder: finder);
+    await mainlineStore.find(db, finder: finder);
     db.close();
 
-    series.sort((item1,item2) => item1.compareTo(item2));
+    series.sort((item1, item2) => item1.compareTo(item2));
 
     return series;
   }
-
 }

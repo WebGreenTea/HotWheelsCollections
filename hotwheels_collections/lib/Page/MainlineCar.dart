@@ -22,124 +22,124 @@ class _MainlineCarState extends State<MainlineCar> {
         //   title: Text(widget.CarData.ModelName),
         // ),
         body: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            HexColor('#FFFFFF'),
-            HexColor('#707070'),
-          ],
-        )),
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-                  child: Center(
-                      child: Text(
-                    widget.CarData.ModelName,
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                  )),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-                  child: Row(
-                    children: [
-                      Text(
-                        'Year : ',
-                        style: TextStyle(fontSize: 18),
-                      ),
-                      Text(
-                        widget.CarData.YEAR.toString(),
-                        style: TextStyle(fontSize: 18),
-                      ),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 7, 20, 0),
-                  child: Row(
-                    children: [
-                      Text(
-                        'Number in year : ',
-                        style: TextStyle(fontSize: 18),
-                      ),
-                      Text(
-                        widget.CarData.NumbersInYear.length == 0
-                            ? '---'
-                            : widget.CarData.NumbersInYear,
-                        style: TextStyle(fontSize: 18),
-                      ),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-                  child: Row(
-                    children: [
-                      Text(
-                        'Series : ',
-                        style: TextStyle(fontSize: 18),
-                      ),
-                      Text(
-                        widget.CarData.Series,
-                        style: TextStyle(fontSize: 18),
-                      ),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 7, 20, 0),
-                  child: Row(
-                    children: [
-                      Text(
-                        'Number in Series : ',
-                        style: TextStyle(fontSize: 18),
-                      ),
-                      Text(
-                        widget.CarData.SeriesNumber.length == 0
-                            ? '---'
-                            : widget.CarData.SeriesNumber,
-                        style: TextStyle(fontSize: 18),
-                      ),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-                  child: Row(
-                    children: [
-                      Text(
-                        'ToyCode : ',
-                        style: TextStyle(fontSize: 18),
-                      ),
-                      Text(
-                        widget.CarData.ToyID.length == 0
-                            ? '---'
-                            : widget.CarData.ToyID,
-                        style: TextStyle(fontSize: 18),
-                      ),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-                  child: Container(
-                      height: MediaQuery.of(context).size.height / 3,
-                      child: OptimizedCacheImage(imageUrl: widget.CarData.img_url)),
-                ),
-                Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-                    child: chaseCarText(widget.CarData.ChaseCar)),
-                Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-                    child: ExclusiveCarText(widget.CarData.Exclusive)),
-              ],
+      decoration: BoxDecoration(
+          gradient: LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: [
+          HexColor('#FFFFFF'),
+          HexColor('#707070'),
+        ],
+      )),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+              child: Center(
+                  child: Text(
+                widget.CarData.ModelName,
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              )),
             ),
-          ),
-        ));
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+              child: Row(
+                children: [
+                  Text(
+                    'Year : ',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  Text(
+                    widget.CarData.YEAR.toString(),
+                    style: TextStyle(fontSize: 18),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 7, 20, 0),
+              child: Row(
+                children: [
+                  Text(
+                    'Number in year : ',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  Text(
+                    widget.CarData.NumbersInYear.length == 0
+                        ? '---'
+                        : widget.CarData.NumbersInYear,
+                    style: TextStyle(fontSize: 18),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+              child: Row(
+                children: [
+                  Text(
+                    'Series : ',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  Text(
+                    widget.CarData.Series,
+                    style: TextStyle(fontSize: 18),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 7, 20, 0),
+              child: Row(
+                children: [
+                  Text(
+                    'Number in Series : ',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  Text(
+                    widget.CarData.SeriesNumber.length == 0
+                        ? '---'
+                        : widget.CarData.SeriesNumber,
+                    style: TextStyle(fontSize: 18),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+              child: Row(
+                children: [
+                  Text(
+                    'ToyCode : ',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  Text(
+                    widget.CarData.ToyID.length == 0
+                        ? '---'
+                        : widget.CarData.ToyID,
+                    style: TextStyle(fontSize: 18),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+              child: Container(
+                  height: MediaQuery.of(context).size.height / 3,
+                  child: OptimizedCacheImage(imageUrl: widget.CarData.img_url)),
+            ),
+            Padding(
+                padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                child: chaseCarText(widget.CarData.ChaseCar)),
+            Padding(
+                padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                child: ExclusiveCarText(widget.CarData.Exclusive)),
+          ],
+        ),
+      ),
+    ));
   }
 
   Widget chaseCarText(List<String> chase) {
@@ -181,13 +181,10 @@ class _MainlineCarState extends State<MainlineCar> {
     return Row(mainAxisAlignment: MainAxisAlignment.center, children: r);
   }
 
-
   Widget ExclusiveCarText(List<String> exclusive) {
     String txt = '';
     var style = TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.blue[900]);
+        fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue[900]);
     List<Widget> r = [Text('')];
 
     if (exclusive.length != 0) {
@@ -200,16 +197,16 @@ class _MainlineCarState extends State<MainlineCar> {
         //   ', ',
         //   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         // ));
-        txt+=data;
-        txt+=', \n';
+        txt += data;
+        txt += ', \n';
       }
-      txt = txt.substring(0,txt.length-3);
+      txt = txt.substring(0, txt.length - 3);
       //r.removeLast();
     }
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text(txt,style: style),
+        Text(txt, style: style),
       ],
     );
   }

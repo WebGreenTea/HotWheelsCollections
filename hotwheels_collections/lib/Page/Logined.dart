@@ -8,21 +8,21 @@ import '../provider/GoogleSignIn.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class LoginedPage extends StatelessWidget {
-  const LoginedPage({Key? key}) : super(key: key);
+class MainMenu extends StatelessWidget {
+  const MainMenu({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          final provider =
-              Provider.of<GoogleSignProvider>(context, listen: false);
-          provider.logout();
-        },
-        child: Icon(Icons.logout,color: HexColor('#ffffff'),),
-        backgroundColor: Colors.grey[700],
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {
+      //     final provider =
+      //         Provider.of<GoogleSignProvider>(context, listen: false);
+      //     provider.logout();
+      //   },
+      //   child: Icon(Icons.logout,color: HexColor('#ffffff'),),
+      //   backgroundColor: Colors.grey[700],
+      // ),
       floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
       body: Container(
         decoration: BoxDecoration(
@@ -100,9 +100,10 @@ class LoginedPage extends StatelessWidget {
               )),
           InkWell(
             onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) { 
-                  return Mainline();
-               }));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (BuildContext context) {
+                return Mainline();
+              }));
             },
             child: Column(
               children: [

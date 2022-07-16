@@ -2,12 +2,12 @@ import 'dart:ffi';
 import 'dart:io';
 import 'package:async/async.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+//import 'package:cloud_firestore/cloud_firestore.dart';
+//import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutterfire_ui/firestore.dart';
+//import 'package:flutterfire_ui/firestore.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:hotwheels_collections/Page/MainlineCar.dart';
 import 'package:hotwheels_collections/dbManage.dart';
@@ -18,7 +18,6 @@ import 'dart:convert';
 import 'package:optimized_cached_image/optimized_cached_image.dart';
 import 'package:sembast/sembast.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
-
 
 class Mainline extends StatefulWidget {
   const Mainline({Key? key}) : super(key: key);
@@ -57,8 +56,8 @@ class _MainlineState extends State<Mainline> {
     super.initState();
     //allYear =  DBManage().getAllYearMainline();
     mainlineData = getMainlineData();
-    KeyboardVisibilityController().onChange.listen((isVisible) { 
-      if(!isVisible){
+    KeyboardVisibilityController().onChange.listen((isVisible) {
+      if (!isVisible) {
         clearKeyboardFocus();
       }
     });
@@ -67,7 +66,7 @@ class _MainlineState extends State<Mainline> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () async{
+      onWillPop: () async {
         clearKeyboardFocus();
         print('back');
         return true;
@@ -154,8 +153,8 @@ class _MainlineState extends State<Mainline> {
                                           //SerieSelectedItem = allSeriesItem[0];
                                           //return Container();
                                           return Container(
-                                            padding:
-                                                EdgeInsets.fromLTRB(10, 0, 0, 0),
+                                            padding: EdgeInsets.fromLTRB(
+                                                10, 0, 0, 0),
                                             decoration: BoxDecoration(
                                               color: Colors.orange[900],
                                               borderRadius:
@@ -168,15 +167,18 @@ class _MainlineState extends State<Mainline> {
                                                   style: TextStyle(
                                                       color: Colors.white,
                                                       fontSize: 16,
-                                                      fontWeight: FontWeight.bold),
+                                                      fontWeight:
+                                                          FontWeight.bold),
                                                 ),
                                                 Container(
                                                   padding: EdgeInsets.symmetric(
-                                                      horizontal: 10, vertical: 0),
+                                                      horizontal: 10,
+                                                      vertical: 0),
                                                   decoration: BoxDecoration(
                                                     color: Colors.white,
                                                     borderRadius:
-                                                        BorderRadius.circular(20),
+                                                        BorderRadius.circular(
+                                                            20),
                                                   ),
                                                   child: DropdownButton<String>(
                                                     value: SerieSelectedItem,
@@ -184,7 +186,8 @@ class _MainlineState extends State<Mainline> {
                                                         .map((item) =>
                                                             DropdownMenuItem(
                                                                 value: item,
-                                                                child: Text(item)))
+                                                                child:
+                                                                    Text(item)))
                                                         .toList(),
                                                     onChanged: (item) =>
                                                         setState(() {
@@ -243,7 +246,11 @@ class _MainlineState extends State<Mainline> {
                           onTap: () {
                             //print('tap listTile');
                             clearKeyboardFocus();
-                            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => MainlineCar(CarData: data[i])));
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        MainlineCar(CarData: data[i])));
                           },
                           leading: Container(
                             width: 70,
@@ -431,7 +438,7 @@ class _MainlineState extends State<Mainline> {
     return year;
   }
 
-  void clearKeyboardFocus(){
+  void clearKeyboardFocus() {
     FocusScopeNode currentFocus = FocusScope.of(context);
     if (!currentFocus.hasPrimaryFocus) {
       currentFocus.unfocus();

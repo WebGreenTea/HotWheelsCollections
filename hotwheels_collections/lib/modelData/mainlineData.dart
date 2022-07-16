@@ -1,4 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+//import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:convert';
 
 class MainLineData {
@@ -47,7 +47,7 @@ class MainLineData {
         );
 
   Map<String, Object?> toJson() => {
-        'id':id,
+        'id': id,
         'ToyID': ToyID,
         'YEAR': YEAR,
         'img_url': img_url,
@@ -56,6 +56,6 @@ class MainLineData {
         'NumberInYear': NumbersInYear,
         'ModelName': ModelName,
         'ChaseCar': ChaseCar,
-        'Exclusive':Exclusive,
+        'Exclusive': Exclusive,
       };
 }
