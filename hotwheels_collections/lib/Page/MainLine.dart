@@ -75,201 +75,209 @@ class _MainlineState extends State<Mainline> {
         onTap: clearKeyboardFocus,
         onVerticalDragCancel: clearKeyboardFocus,
         child: Scaffold(
+            resizeToAvoidBottomInset: false,
             //appBar: AppBar(title: Text('MainLine')),
             body: Column(
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.orange,
-                // borderRadius: BorderRadius.only(
-                //     bottomLeft: Radius.circular(15),
-                //     bottomRight: Radius.circular(15))
-              ),
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(5, 30, 5, 0),
-                    child: TextField(
-                      controller: searchController,
-                      decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Colors.white,
-                          prefixIcon: Icon(
-                            Icons.search,
-                            color: HexColor('#707070'),
-                          ),
-                          hintText: 'Model name',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(14),
-                            borderSide: BorderSide(
-                              width: 0,
-                              style: BorderStyle.none,
-                            ),
-                          )),
-                      onChanged: searchModel,
-                    ),
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.orange,
+                    // borderRadius: BorderRadius.only(
+                    //     bottomLeft: Radius.circular(15),
+                    //     bottomRight: Radius.circular(15))
                   ),
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(3, 4, 5, 4),
-                      child: Row(
-                        children: [
-                          AscendingButton(),
-                          FutureBuilder(
-                            future: DBManage().getAllYearMainline(),
-                            builder: (BuildContext context,
-                                AsyncSnapshot<dynamic> snapshot) {
-                              if (snapshot.hasData) {
-                                //print(snapshot.data);
-                                List<String> allYearItem = snapshot.data;
-                                allYearItem.insert(0, 'ALL YEAR');
-                                allYearItem = allYearItem.toSet().toList();
-                                return Row(
-                                  children: [
-                                    SizedBox(
-                                      width: 5,
-                                    ),
-                                    YearDropDown(allYearItem),
-                                    SizedBox(
-                                      width: 5,
-                                    ),
-                                    FutureBuilder(
-                                      future: Series,
-                                      builder: (BuildContext context,
-                                          AsyncSnapshot<dynamic> snapshot) {
-                                        if (snapshot.hasData &&
-                                            snapshot.connectionState ==
-                                                ConnectionState.done) {
-                                          List<String> allSeriesItem =
-                                              snapshot.data;
-                                          allSeriesItem.insert(0, 'ALL Series');
-                                          allSeriesItem =
-                                              allSeriesItem.toSet().toList();
-                                          //print(allSeriesItem);
-                                          if (allSeriesItem.length <= 1) {
-                                            return Container();
-                                          }
-                                          //SerieSelectedItem = allSeriesItem[0];
-                                          //return Container();
-                                          return Container(
-                                            padding: EdgeInsets.fromLTRB(
-                                                10, 0, 0, 0),
-                                            decoration: BoxDecoration(
-                                              color: Colors.orange[900],
-                                              borderRadius:
-                                                  BorderRadius.circular(20),
-                                            ),
-                                            child: Row(
-                                              children: [
-                                                Text(
-                                                  'Series : ',
-                                                  style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 16,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
-                                                Container(
-                                                  padding: EdgeInsets.symmetric(
-                                                      horizontal: 10,
-                                                      vertical: 0),
-                                                  decoration: BoxDecoration(
-                                                    color: Colors.white,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            20),
-                                                  ),
-                                                  child: DropdownButton<String>(
-                                                    value: SerieSelectedItem,
-                                                    items: allSeriesItem
-                                                        .map((item) =>
-                                                            DropdownMenuItem(
-                                                                value: item,
-                                                                child:
-                                                                    Text(item)))
-                                                        .toList(),
-                                                    onChanged: (item) =>
-                                                        setState(() {
-                                                      SerieSelectedItem = item!;
-                                                      mainlineData =
-                                                          getMainlineData();
-                                                      Series = DBManage()
-                                                          .getSeriesMainlinrOfYear(
-                                                              convertYearStrToInt(
-                                                                  YearSelectedItem));
-                                                    }),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          );
-                                        }
-                                        return Container();
-                                      },
-                                    )
-                                  ],
-                                );
-                              }
-                              return Container();
-                            },
-                          )
-                        ],
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(5, 30, 5, 0),
+                        child: TextField(
+                          controller: searchController,
+                          decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Colors.white,
+                              prefixIcon: Icon(
+                                Icons.search,
+                                color: HexColor('#707070'),
+                              ),
+                              hintText: 'Model name',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(14),
+                                borderSide: BorderSide(
+                                  width: 0,
+                                  style: BorderStyle.none,
+                                ),
+                              )),
+                          onChanged: searchModel,
+                        ),
                       ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            FutureBuilder(
-              future: mainlineData,
-              builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-                if (snapshot.hasData &&
-                    snapshot.connectionState == ConnectionState.done) {
-                  List<MainLineData> data = snapshot.data;
-                  if (data.length <= 0) {
-                    return Expanded(
-                        child: Center(
-                            child: Text(
-                      'There are no results for "${TextinSearchBar}"',
-                      style: TextStyle(color: HexColor('#707070')),
-                    )));
-                  }
-                  return Expanded(
-                    child: ListView.builder(
-                      controller: scrollController,
-                      padding: EdgeInsets.zero,
-                      shrinkWrap: true,
-                      itemCount: data.length,
-                      itemBuilder: (context, i) {
-                        return ListTile(
-                          onTap: () {
-                            //print('tap listTile');
-                            clearKeyboardFocus();
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (BuildContext context) =>
-                                        MainlineCar(CarData: data[i])));
-                          },
-                          leading: Container(
-                            width: 70,
-                            child: Loadimage(data[i]),
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(3, 4, 5, 4),
+                          child: Row(
+                            children: [
+                              AscendingButton(),
+                              FutureBuilder(
+                                future: DBManage().getAllYearMainline(),
+                                builder: (BuildContext context,
+                                    AsyncSnapshot<dynamic> snapshot) {
+                                  if (snapshot.hasData) {
+                                    //print(snapshot.data);
+                                    List<String> allYearItem = snapshot.data;
+                                    allYearItem.insert(0, 'ALL YEAR');
+                                    allYearItem = allYearItem.toSet().toList();
+                                    return Row(
+                                      children: [
+                                        SizedBox(
+                                          width: 5,
+                                        ),
+                                        YearDropDown(allYearItem),
+                                        SizedBox(
+                                          width: 5,
+                                        ),
+                                        FutureBuilder(
+                                          future: Series,
+                                          builder: (BuildContext context,
+                                              AsyncSnapshot<dynamic> snapshot) {
+                                            if (snapshot.hasData &&
+                                                snapshot.connectionState ==
+                                                    ConnectionState.done) {
+                                              List<String> allSeriesItem =
+                                                  snapshot.data;
+                                              allSeriesItem.insert(
+                                                  0, 'ALL Series');
+                                              allSeriesItem = allSeriesItem
+                                                  .toSet()
+                                                  .toList();
+                                              //print(allSeriesItem);
+                                              if (allSeriesItem.length <= 1) {
+                                                return Container();
+                                              }
+                                              //SerieSelectedItem = allSeriesItem[0];
+                                              //return Container();
+                                              return Container(
+                                                padding: EdgeInsets.fromLTRB(
+                                                    10, 0, 0, 0),
+                                                decoration: BoxDecoration(
+                                                  color: Colors.orange[900],
+                                                  borderRadius:
+                                                      BorderRadius.circular(20),
+                                                ),
+                                                child: Row(
+                                                  children: [
+                                                    Text(
+                                                      'Series : ',
+                                                      style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                    ),
+                                                    Container(
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                              horizontal: 10,
+                                                              vertical: 0),
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.white,
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(20),
+                                                      ),
+                                                      child: DropdownButton<
+                                                          String>(
+                                                        value:
+                                                            SerieSelectedItem,
+                                                        items: allSeriesItem
+                                                            .map((item) =>
+                                                                DropdownMenuItem(
+                                                                    value: item,
+                                                                    child: Text(
+                                                                        item)))
+                                                            .toList(),
+                                                        onChanged: (item) =>
+                                                            setState(() {
+                                                          SerieSelectedItem =
+                                                              item!;
+                                                          mainlineData =
+                                                              getMainlineData();
+                                                          Series = DBManage()
+                                                              .getSeriesMainlinrOfYear(
+                                                                  convertYearStrToInt(
+                                                                      YearSelectedItem));
+                                                        }),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              );
+                                            }
+                                            return Container();
+                                          },
+                                        )
+                                      ],
+                                    );
+                                  }
+                                  return Container();
+                                },
+                              )
+                            ],
                           ),
-                          title: Text(data[i].ModelName),
-                          subtitle: Text(
-                              '${data[i].Series} ${data[i].SeriesNumber} ${data[i].YEAR}'),
-                        );
-                      },
-                    ),
-                  );
-                }
-                //return Center(child: CircularProgressIndicator());
-                return LinearProgressIndicator();
-              },
-            )
-          ],
-        )),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                FutureBuilder(
+                  future: mainlineData,
+                  builder:
+                      (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                    if (snapshot.hasData &&
+                        snapshot.connectionState == ConnectionState.done) {
+                      List<MainLineData> data = snapshot.data;
+                      if (data.length <= 0) {
+                        return Expanded(
+                            child: Center(
+                                child: Text(
+                          'There are no results for "${TextinSearchBar}"',
+                          style: TextStyle(color: HexColor('#707070')),
+                        )));
+                      }
+                      return Expanded(
+                        child: ListView.builder(
+                          controller: scrollController,
+                          padding: EdgeInsets.zero,
+                          shrinkWrap: true,
+                          itemCount: data.length,
+                          itemBuilder: (context, i) {
+                            return ListTile(
+                              onTap: () {
+                                //print('tap listTile');
+                                clearKeyboardFocus();
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (BuildContext context) =>
+                                            MainlineCar(CarData: data[i])));
+                              },
+                              leading: Container(
+                                width: 70,
+                                child: Loadimage(data[i]),
+                              ),
+                              title: Text(data[i].ModelName),
+                              subtitle: Text(
+                                  '${data[i].Series} ${data[i].SeriesNumber} ${data[i].YEAR}'),
+                            );
+                          },
+                        ),
+                      );
+                    }
+                    //return Center(child: CircularProgressIndicator());
+                    return LinearProgressIndicator();
+                  },
+                )
+              ],
+            )),
       ),
     );
   }

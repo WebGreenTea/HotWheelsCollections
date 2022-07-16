@@ -15,6 +15,7 @@ class DBManage {
   static const String VERSION_STORE_NAME = 'dataVersion';
   static const String MAINLINE_STORE_NAME = 'mainline';
   String dbName = 'mainDB.db';
+  String dbCollections = 'collections.db';
   List<String> allDoc = ['mainline'];
 
   Future<void> importDB() async {
